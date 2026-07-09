@@ -70,18 +70,28 @@ case ":$PATH:" in
 *)
 	shell_name="$(basename "${SHELL:-sh}")"
 	case "$shell_name" in
-	zsh) rc="~/.zshrc" ;;
-	bash) rc="~/.bashrc" ;;
-	fish) rc="~/.config/fish/config.fish" ;;
-	*) rc="your shell profile" ;;
+	zsh) rc="$HOME/.zshrc" ;;
+	bash) rc="$HOME/.bashrc" ;;
+	fish) rc="$HOME/.config/fish/config.fish" ;;
+	*) rc="" ;;
 	esac
-	printf "\nAdd whop to your PATH by adding this to %s:\n" "$rc"
 	if [ "$shell_name" = "fish" ]; then
-		printf "  fish_add_path %s\n" "$install_dir"
+		path_line="fish_add_path $install_dir"
 	else
-		printf "  export PATH=\"%s:\$PATH\"\n" "$install_dir"
+		path_line="export PATH=\"$install_dir:\$PATH\""
+	fi
+	if [ -n "$rc" ]; then
+		mkdir -p "$(dirname "$rc")"
+		if [ ! -f "$rc" ] || ! grep -Fqs "$path_line" "$rc"; then
+			printf "\n%s\n" "$path_line" >>"$rc"
+		fi
+		printf "\nAdded whop to your PATH in %s. Restart your shell or run:\n" "$rc"
+		printf "  %s\n" "$path_line"
+	else
+		printf "\nAdd whop to your PATH by adding this to your shell profile:\n"
+		printf "  %s\n" "$path_line"
 	fi
 	;;
 esac
 
-printf "\nGet started with: whop quickstart\n"
+printf "\nRun \`whop\` to get started\n"
