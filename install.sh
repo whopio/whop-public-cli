@@ -1,10 +1,12 @@
 #!/bin/sh
 # Installs the Whop CLI:  curl -fsSL https://whop.com/install.sh | sh
 #
-#   WHOP_INSTALL_DIR       install location (default ~/.whop/bin)
-#   WHOP_INSTALL_VERSION   version to install, e.g. 0.1.0 (default: latest)
-#   WHOP_INSTALL_BASE_URL  asset directory override (testing/rc: any URL curl
-#                          accepts, incl. file://) — takes priority
+#   WHOP_INSTALL_DIR             install location (default ~/.whop/bin)
+#   WHOP_INSTALL_VERSION         version to install, e.g. 0.1.0 (default: latest)
+#   WHOP_INSTALL_BASE_URL        asset directory override (testing/rc: any URL curl
+#                                accepts, incl. file://) — takes priority
+#   WHOP_INSTALL_NO_MODIFY_PATH  if set, never touch shell profiles; print the
+#                                PATH line to add instead
 set -eu
 
 repo="whopio/whop-public-cli"
@@ -80,7 +82,7 @@ case ":$PATH:" in
 	else
 		path_line="export PATH=\"$install_dir:\$PATH\""
 	fi
-	if [ -n "$rc" ]; then
+	if [ -n "$rc" ] && [ -z "${WHOP_INSTALL_NO_MODIFY_PATH:-}" ]; then
 		mkdir -p "$(dirname "$rc")"
 		if [ ! -f "$rc" ] || ! grep -Fqs "$path_line" "$rc"; then
 			printf "\n%s\n" "$path_line" >>"$rc"
