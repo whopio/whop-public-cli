@@ -1,7 +1,7 @@
 #!/bin/sh
 # Installs the Whop CLI:  curl -fsSL https://whop.com/install.sh | sh
 #
-#   WHOP_INSTALL_DIR             install location (default ~/.whop/bin)
+#   WHOP_INSTALL_DIR             install location (default user executable directory)
 #   WHOP_INSTALL_VERSION         version to install, e.g. 0.1.0 (default: latest)
 #   WHOP_INSTALL_BASE_URL        asset directory override (testing/rc: any URL curl
 #                                accepts, incl. file://) — takes priority
@@ -10,7 +10,15 @@
 set -eu
 
 repo="whopio/whop-public-cli"
-install_dir="${WHOP_INSTALL_DIR:-$HOME/.whop/bin}"
+if [ -n "${WHOP_INSTALL_DIR:-}" ]; then
+	install_dir="$WHOP_INSTALL_DIR"
+elif [ -n "${XDG_BIN_HOME:-}" ]; then
+	install_dir="$XDG_BIN_HOME"
+elif [ -n "${XDG_DATA_HOME:-}" ]; then
+	install_dir="$(dirname "$XDG_DATA_HOME")/bin"
+else
+	install_dir="$HOME/.local/bin"
+fi
 
 error() {
 	printf "\033[31merror\033[0m: %s\n" "$1" >&2
@@ -67,8 +75,10 @@ chmod 755 "$install_dir/whop"
 
 printf "Installed %s to %s\n" "$("$install_dir/whop" --version | head -n1 | sed 's/^/whop v/')" "$install_dir"
 
+path_ready=""
+path_configured=""
 case ":$PATH:" in
-*":$install_dir:"*) ;;
+*":$install_dir:"*) path_ready="1" ;;
 *)
 	shell_name="$(basename "${SHELL:-sh}")"
 	case "$shell_name" in
@@ -87,8 +97,8 @@ case ":$PATH:" in
 		if [ ! -f "$rc" ] || ! grep -Fqs "$path_line" "$rc"; then
 			printf "\n%s\n" "$path_line" >>"$rc"
 		fi
-		printf "\nAdded whop to your PATH in %s. Restart your shell or run:\n" "$rc"
-		printf "  %s\n" "$path_line"
+		path_configured="1"
+		printf "\nAdded whop to your PATH in %s.\n" "$rc"
 	else
 		printf "\nAdd whop to your PATH by adding this to your shell profile:\n"
 		printf "  %s\n" "$path_line"
@@ -96,4 +106,10 @@ case ":$PATH:" in
 	;;
 esac
 
-printf "\nRun \`whop\` to get started\n"
+if [ -n "$path_ready" ]; then
+	printf "\nRun \`whop\` to get started\n"
+elif [ -n "$path_configured" ]; then
+	printf "\n\033[1mRun \`whop\` in a new terminal to get started\033[0m\n"
+else
+	printf "\n\033[1mAdd whop to your PATH, then run \`whop\` to get started\033[0m\n"
+fi
