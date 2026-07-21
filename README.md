@@ -36,14 +36,12 @@ That's it! It signs you in, lets you choose or create the business the CLI shoul
 
 ```bash
 whop --help                  # all commands
-whop products list           # what you're selling
 whop plans create --help     # options for any command
-whop stats list              # your numbers
 ```
 
 Every command takes `--format json` for structured output (and `--format jsonl` to stream events).
 
-In a terminal, commands that are missing required inputs ask for them interactively instead of failing — run `whop swaps quote` with no flags and it prompts for the amount and tokens. Agents and scripts (non-TTY) get a structured validation error instead, so nothing hangs waiting on a prompt.
+In a terminal, commands missing required inputs prompt for them instead of failing — `whop swaps quote` with no flags asks for the amount and tokens. Agents and scripts (non-TTY) get a structured validation error instead, so nothing hangs on a prompt.
 
 ## Authentication
 
@@ -60,10 +58,7 @@ The OAuth flow redirects to `localhost:13337`, so the browser must run on the sa
 
 ### Agent OAuth recipe
 
-1. Run `whop login --method oauth --format jsonl` in the background with stdout redirected to a file — pipes like `| head` can buffer past the URL.
-2. The first line is an `authorization_required` event, emitted once the local callback listener is ready. Open its `authorizationUrl` in the user's browser (`open <url>` on macOS, `xdg-open <url>` on Linux). The URL is several KB long (it carries the full scope list) — pass it programmatically and never retype, truncate, or summarize it, or it fails with `invalid_scope`.
-3. Wait for the process to exit — the final `done` event means the profile is saved.
-4. If the user manages more than one business, set the active one afterwards with `whop auth account <biz_id>`.
+Run `whop login --method oauth --format jsonl` in the background with stdout redirected to a file (pipes like `| head` can buffer past the URL). The first line is an `authorization_required` event carrying an `authorizationUrl` — open it in the user's browser (`open <url>` / `xdg-open <url>`). It's several KB long (the full scope list); pass it programmatically without editing it, or it fails with `invalid_scope`. When the process exits with a `done` event, the profile is saved.
 
 ## Build and deploy apps
 
@@ -85,9 +80,9 @@ whop apps dev                     # local dev server, credentials auto-injected
 whop apps deploy                  # build → typecheck → upload → promote to production
 ```
 
-`deploy` ships the linked project; `--preview` uploads without promoting, and `whop apps builds promote <build_id>` ships it later — promoting an older build is also how you roll back. `pull` and `deploy` share a per-app snapshot ref (`refs/whop/remote/<app_id>`), so pulls always merge against the last state this machine saw: local edits are autostashed around the merge and conflicts surface as normal git conflict markers.
+`deploy` ships the linked project; `--preview` uploads without promoting, and `whop apps builds promote <build_id>` ships it later — promoting an older build is also how you roll back.
 
-Everything else is plain REST: `whop apps list|create|get|update`, `whop apps builds list|get|promote`, and `whop apps secrets list|set|unset` (secrets are encrypted at rest and injected into both the hosted runtime and `whop apps dev`).
+Everything else is plain REST: `whop apps list|create|get|update`, `whop apps builds list|get|promote`, and `whop apps secrets list|set|unset` (encrypted at rest, injected into both the hosted runtime and `whop apps dev`).
 
 After a deploy, read your app's server logs — every `console.log`, uncaught exception, and failed request, kept for 7 days:
 
@@ -108,7 +103,7 @@ whop checkout-configurations create --help          # shareable, prefilled check
 whop stats list                                     # financial, audience, and traffic reporting
 ```
 
-Money moves through the same consistent surface — send payouts to a bank or wallet, transfer between Whop accounts, add or convert balances, and issue spending cards. Payouts and card issuing require a completed identity verification (`whop verifications`); links that must be finished in a browser (KYC sessions, hosted deposit pages) are surfaced for you to open, with the URL always printed as a fallback.
+Money moves through the same surface — payouts to a bank or wallet, transfers between accounts, deposits, swaps, and spending cards. Payouts and card issuing require a completed identity verification (`whop verifications`); any step that needs a browser (KYC, hosted deposit pages) is surfaced as a link to open.
 
 ## Run ads
 
