@@ -30,7 +30,7 @@ Prebuilt binaries cover macOS and Linux ([releases](https://github.com/whopio/wh
 whop login
 ```
 
-That's it! It signs you in, lets you choose or create the business the CLI should use, and points you to the available workflows. Run `whop quickstart` later to change the selected business.
+That's it! It signs you in, then points you to `whop quickstart` to choose or create the business the CLI should use (run `quickstart` anytime to switch business).
 
 ## Usage
 
@@ -58,7 +58,7 @@ The OAuth flow redirects to `localhost:13337`, so the browser must run on the sa
 
 ### Agent OAuth recipe
 
-Run `whop login --method oauth --format jsonl` in the background with stdout redirected to a file (pipes like `| head` can buffer past the URL). The first line is an `authorization_required` event carrying an `authorizationUrl` — open it in the user's browser (`open <url>` / `xdg-open <url>`). It's several KB long (the full scope list); pass it programmatically without editing it, or it fails with `invalid_scope`. When the process exits with a `done` event, the profile is saved.
+Run `whop login --method oauth --format jsonl` in the background with stdout redirected to a file (pipes like `| head` can buffer past the URL). The first line is an `authorization_required` event carrying an `authorizationUrl` — open it in the user's browser (`open <url>` / `xdg-open <url>`). It's several KB long (the full scope list); pass it programmatically without editing it, or it fails with `invalid_scope`. The final line is the saved-profile result; once the process exits, you're logged in.
 
 ## Build and deploy apps
 
@@ -88,7 +88,7 @@ After a deploy, read your app's server logs — every `console.log`, uncaught ex
 
 ```bash
 whop apps logs app_xxxxxxxx --level error
-whop apps logs app_xxxxxxxx --query "checkout" --since 10m
+whop apps logs app_xxxxxxxx --query "checkout"
 ```
 
 The `whop()` Vite build plugin ships as `@whop/cli/vite`.
@@ -96,7 +96,6 @@ The `whop()` Vite build plugin ships as `@whop/cli/vite`.
 ## Sell and get paid
 
 ```bash
-whop quickstart                                     # guided: create a product, plan, and checkout link
 whop products create --name "Pro membership"
 whop plans create --help                            # one-time, recurring, trials, stock
 whop checkout-configurations create --help          # shareable, prefilled checkout link
