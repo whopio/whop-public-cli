@@ -55,9 +55,12 @@ whop --help                  # all commands
 whop products list           # what you're selling
 whop plans create --help     # options for any command
 whop stats list              # your numbers
+whop accounts get --account_id biz_xxx  # target another business
 ```
 
 Every command takes `--format json` for structured output, or `--format jsonl` to stream events.
+
+Account-scoped commands use the selected business by default. Pass another business with `--account_id`.
 
 In a terminal, commands prompt for missing inputs. Agents and scripts (non-TTY) get a structured validation error instead, so nothing hangs.
 
@@ -138,7 +141,7 @@ The CLI is self-describing. Agents can discover and drive every command:
 
 ```bash
 whop --llms          # machine-readable manifest of all commands
-whop mcp add         # register as an MCP server (e.g. Claude Desktop)
+whop mcp add         # automatically register with supported coding agents
 whop mcp doctor      # diagnose an MCP registration
 whop skills add      # generate agent skills (per-resource playbooks)
 ```
