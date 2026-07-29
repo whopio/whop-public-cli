@@ -101,6 +101,24 @@ whop stats list                                     # financial, audience, and t
 
 Money moves through the same surface: payouts, transfers, deposits, swaps, and cards. Payouts and card issuing require identity verification (`whop verifications`). Steps that need a browser, like KYC, show up as a link to open.
 
+## Serve the customers you have
+
+```bash
+whop members list --access_level customer         # one row per buyer
+whop memberships cancel mem_xxx --reason "moved"  # also pause, resume, extend
+whop shipments create --payment_id pay_xxx --tracking_number 1Z999
+whop disputes list                                # chargebacks, with evidence and outcomes
+whop resolution-center-cases reply reso_xxx --help # answer a case before it escalates
+```
+
+## Export and notify
+
+```bash
+whop exports create --resource receipts     # then poll until download_url is set
+whop exports get exprt_xxx
+whop notifications create --experience_id exp_xxx --title "New drop" --content "Live now"
+```
+
 ## Run ads
 
 Generate a creative, then create the campaign, ad group, and ad in one command. Structured flags take JSON strings:
