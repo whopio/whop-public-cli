@@ -166,7 +166,7 @@ whop skills add      # generate agent skills (per-resource playbooks)
 
 For OAuth, run `whop login --method oauth --format jsonl` in the background with stdout redirected to a file (pipes like `| head` can buffer past the URL). The first line carries an `authorizationUrl`; open it in the user's browser, unedited. Once the process exits, you're logged in.
 
-For unattended automation, set `WHOP_API_KEY` (create one under **Developer → API keys**).
+For unattended automation, set `WHOP_API_KEY` (create one under **Developer → API keys**). For API commands, it takes precedence over any saved CLI profile for that invocation.
 
 ## Authentication
 
