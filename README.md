@@ -55,12 +55,12 @@ whop --help                  # all commands
 whop products list           # what you're selling
 whop plans create --help     # options for any command
 whop stats list              # your numbers
-whop accounts get --account_id jordan   # retrieve a business by route
+whop accounts get jordan                # retrieve a business by route
 ```
 
 Every command takes `--format json` for structured output, or `--format jsonl` to stream events.
 
-Account-scoped commands use the selected business by default. Pass another business's `biz_` ID or public route with `--account_id`.
+Commands that act on one account take the business's `biz_` ID or public route positionally. Account-scoped commands use the selected business by default; pass `--account_id` to choose a different scope. Account preferences and reserves remain account-scoped.
 
 In a terminal, commands prompt for missing inputs. Agents and scripts (non-TTY) get a structured validation error instead, so nothing hangs.
 
