@@ -133,7 +133,7 @@ whop ads create \
 whop ad-campaigns update <adcamp_id> --status active   # launch when ready
 ```
 
-The `whop-ads` skill (`whop skills add`) carries the full playbook.
+The `whop` skill (`whop skills add`) carries the launch playbook in `references/ads.md`.
 
 ## Hire a workforce
 
@@ -161,7 +161,7 @@ The CLI is self-describing. Agents can discover and drive every command:
 whop --llms          # machine-readable manifest of all commands
 whop mcp add         # automatically register with supported coding agents
 whop mcp doctor      # diagnose an MCP registration
-whop skills add      # generate agent skills (per-resource playbooks)
+whop skills add      # install the Whop agent skill
 ```
 
 For OAuth, run `whop login --method oauth --format jsonl` in the background with stdout redirected to a file (pipes like `| head` can buffer past the URL). The first line carries an `authorizationUrl`; open it in the user's browser, unedited. Once the process exits, you're logged in.
