@@ -81,6 +81,18 @@ whop apps deploy                  # build, typecheck, upload, promote to product
 
 The rest is plain REST: `whop apps list|create|get|update`, `whop apps builds list|get|promote`, `whop apps secrets list|set|unset`. The `whop()` Vite build plugin ships as `@whop/cli/vite`.
 
+App secrets are encrypted at rest and injected into the hosted runtime. `whop apps dev` also injects them locally, except names that control the local runtime.
+
+Manage them with:
+
+```bash
+whop apps secrets list
+whop apps secrets set --secret MAIL_API_KEY=mail-key-123
+whop apps secrets unset --key MAIL_API_KEY
+```
+
+Run these inside a linked project or pass `--app app_xxxxxxxx`. App secrets are runtime configuration; they are separate from the app API key exposed as `WHOP_API_KEY` in the dashboard.
+
 After a deploy, read your app's server logs (kept for 7 days):
 
 ```bash
@@ -88,7 +100,7 @@ whop apps logs app_xxxxxxxx --level error
 whop apps logs app_xxxxxxxx --query "checkout"
 ```
 
-
+App logs cover the hosted server runtime. Use your browser's developer console for client-side JavaScript errors.
 
 ## Sell and get paid
 
@@ -178,6 +190,8 @@ WHOP_API_KEY=whop_xxx whop login --method api-key   # API key from the environme
 ```
 
 List your businesses with `whop auth account --list` and switch with `whop auth account <biz_id>`.
+
+`whop api-keys permissions` lists the permissions that can be assigned to API keys. Creating, listing, updating, rotating, and revoking keys requires a first-party dashboard session, so those operations are not exposed by the CLI. Manage keys in the [Whop dashboard](https://whop.com/dashboard).
 
 The OAuth flow redirects to `localhost:13337`, so the browser must run on the same host as the CLI (or forward that port).
 
