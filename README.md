@@ -4,7 +4,7 @@
 
 ```bash
 whop accounts create --title "Acme"                       # create a business
-whop apps deploy                                          # ship a web app to *.whop.app
+whop apps deploy                                          # ship a web app to *.whop.site
 whop products create --title "Pro membership"             # something to sell
 whop checkout-configurations create --plan_id plan_xxx    # a link that accepts money
 whop media generate --type image --prompt "launch art"    # make an ad creative
@@ -15,7 +15,7 @@ whop stats list                                           # how it's all going
 
 With the CLI you can:
 
-- **Ship software**: build and deploy hosted web apps to `*.whop.app`, with previews, rollbacks, secrets, and production logs
+- **Ship software**: build and deploy hosted web apps to `*.whop.site`, with previews, rollbacks, secrets, and production logs
 - **Sell anything**: products, one-time / recurring / trial pricing, checkout links
 - **Move money**: payouts, transfers, deposits, currency swaps, spending cards
 - **Advertise**: generate AI images and video, run Meta or Tiktok campaigns
@@ -66,7 +66,7 @@ In a terminal, commands prompt for missing inputs. Agents and scripts (non-TTY) 
 
 ## Ship apps
 
-Hosted web apps (`*.whop.app`) follow a git-shaped lifecycle. Two on-ramps, one loop:
+Hosted web apps (`*.whop.site`) follow a git-shaped lifecycle. Two on-ramps, one loop:
 
 ```bash
 whop apps init                    # start a NEW app: registers, scaffolds, git-inits
@@ -79,7 +79,7 @@ whop apps deploy                  # build, typecheck, upload, promote to product
 
 `deploy --preview` uploads without promoting. `whop apps builds promote <build_id>` ships a build later, and promoting an older build rolls back. `pull` merges the deployed source with your local files via git, so conflicts show up as normal git conflict markers.
 
-The rest is plain REST: `whop apps list|create|get|update`, `whop apps builds list|get|promote`, `whop apps secrets list|set|unset`. The `whop()` Vite build plugin ships as `@whop/cli/vite`.
+The rest is plain REST: `whop apps list|create|get|update|delete`, `whop apps builds list|get|promote`, `whop apps secrets list|set|unset`. The `whop()` Vite build plugin ships as `@whop/cli/vite`.
 
 App secrets are encrypted at rest and injected into the hosted runtime. `whop apps dev` also injects them locally, except names that control the local runtime.
 
@@ -147,6 +147,15 @@ whop ad-campaigns update <adcamp_id> --status active   # launch when ready
 
 The `whop` skill (`whop skills add`) carries the launch playbook in `references/ads.md`.
 
+## Run experiments
+
+Use `whop experiments` to list, create, get, update, evaluate exposures, activate, pause, or end account experiments. Account experiments do not accept or require tags. Creating one currently requires Whop internal access.
+
+```bash
+whop experiments list --account_id biz_xxx
+whop experiments create --help
+```
+
 ## Hire a workforce
 
 ```bash
@@ -163,7 +172,7 @@ whop files create --filename "banner.png"
 whop files get file_xxxxxxxxxxxxx
 ```
 
-`create` returns a presigned `upload_url` and `upload_headers`. Upload the bytes there, then `get` returns the file URL once it's ready.
+`create` returns a presigned `upload_url` and `upload_headers`. Upload the bytes there, then `get` returns the file URL once it's ready. `list` shows your uploads, and `complete` finishes a multipart upload once every part is in.
 
 ## For AI agents
 
