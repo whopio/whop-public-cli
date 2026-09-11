@@ -64,6 +64,15 @@ Commands that act on one account take the business's `biz_` ID or public route p
 
 In a terminal, commands prompt for missing inputs. Agents and scripts (non-TTY) get a structured validation error instead, so nothing hangs.
 
+## Feedback and questions
+
+```bash
+whop report-feedback --content "The error message does not explain which permission is missing."
+whop ask-question --content "How do trials interact with an existing subscription?" --format json
+```
+
+Both commands submit one observation for Whop's internal review and return a receipt. `ask-question` records an unanswered question; it does not return an answer or start a support conversation. Use a user credential from `whop login` (browser OAuth). Remove secrets, personal data, and payment details from `--content`.
+
 ## Ship apps
 
 Hosted web apps (`*.whop.site`) follow a git-shaped lifecycle. Two on-ramps, one loop:
