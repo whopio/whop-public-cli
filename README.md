@@ -73,6 +73,8 @@ whop ask-question --content "How do trials interact with an existing subscriptio
 
 Both commands submit one observation for Whop's internal review and return a receipt. `ask-question` records an unanswered question; it does not return an answer or start a support conversation. Use a user credential from `whop login` (browser OAuth). Remove secrets, personal data, and payment details from `--content`.
 
+Use `--account_id biz_...` to identify the account for an affected resource. Both commands default to your active account when available. Account context is optional.
+
 ## Ship apps
 
 Hosted web apps (`*.whop.site`) follow a git-shaped lifecycle. Two on-ramps, one loop:
@@ -119,6 +121,14 @@ whop plans create --help                            # one-time, recurring, trial
 whop checkout-configurations create --help          # shareable, prefilled checkout link
 whop stats list                                     # financial, audience, and traffic reporting
 ```
+
+Set product gallery images or videos with uploaded file IDs:
+
+```bash
+whop products update prod_xxxxxxxx --gallery_images '[{"id":"file_xxxxxxxx"}]'
+```
+
+`products create` accepts the same option. The array replaces the gallery in display order; include every file you want to keep. Pass `'[]'` to clear it. `banner_image` is separate and does not satisfy the marketplace gallery requirement.
 
 Money moves through the same surface: payouts, transfers, deposits, swaps, and cards. Payouts and card issuing require identity verification (`whop verifications`). Steps that need a browser, like KYC, show up as a link to open.
 
