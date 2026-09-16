@@ -56,6 +56,7 @@ whop products list           # what you're selling
 whop plans create --help     # options for any command
 whop stats list              # your numbers
 whop accounts get jordan                # retrieve a business by route
+whop partners retrieve me                # your partner profile and payout rates
 ```
 
 Every command takes `--format json` for structured output, or `--format jsonl` to stream events.
