@@ -133,6 +133,17 @@ whop products update prod_xxxxxxxx --gallery_images '[{"id":"file_xxxxxxxx"}]'
 
 Money moves through the same surface: payouts, transfers, deposits, swaps, and cards. Payouts and card issuing require identity verification (`whop verifications`). Steps that need a browser, like KYC, show up as a link to open.
 
+## Read trading activity
+
+Trading is available by request. Email support@whop.com to get access.
+
+```bash
+whop accounts get biz_xxx --include_trading true --format json
+whop users get me --include_trading true --format json
+```
+
+These commands retrieve trading balances, positions and open orders from the supported provider; they don't place orders or move funds. Hyperliquid is currently supported.
+
 ## Serve the customers you have
 
 ```bash
