@@ -199,11 +199,13 @@ whop bounty-submissions list --help      # review submitted work, approve to pay
 ## Upload files
 
 ```bash
-whop files create --filename "banner.png"
+whop files create --filepath ./banner.png --visibility public
 whop files get file_xxxxxxxxxxxxx
 ```
 
-`create` returns a presigned `upload_url` and `upload_headers`. Upload the bytes there, then `get` returns the file URL once it's ready. `list` shows your uploads, and `complete` finishes a multipart upload once every part is in.
+`create --filepath` uploads a local file end to end: it creates the file, sends its bytes (in parts for files over 100 MB), and returns it once it's ready with its URL. The file name defaults to the local file's name.
+
+Without `--filepath`, `create --filename` returns a presigned `upload_url` and `upload_headers` to upload the bytes yourself; `get` returns the file URL once it's ready. `list` shows your uploads, and `complete` finishes a multipart upload once every part is in.
 
 ## For AI agents
 
