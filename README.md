@@ -144,6 +144,10 @@ whop users get me --include_trading true --format json
 
 These commands retrieve trading balances, positions and open orders from the supported provider; they don't place orders or move funds. Hyperliquid is currently supported.
 
+Use `whop trades create --help` for market, limit, ladder and take-profit/stop-loss orders; `whop trades cancel trop_xxx` to cancel an original batch; and `whop trades leverage --help` to configure leverage. Retrieve an initiated action with `whop trades get trop_xxx`. These are submission records, not live fill history. Writes require an `Idempotency-Key`; reuse it after an ambiguous response.
+
+Opening positions and changing leverage are available by request. Cancellation and reduce-only exits keep working even when Whop pauses new positions.
+
 ## Serve the customers you have
 
 ```bash
