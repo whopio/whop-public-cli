@@ -48,6 +48,10 @@ whop
 
 That's it! Run `whop auth accounts` anytime to switch businesses.
 
+## Financing applications
+
+`whop financing-applications list`, `create`, and `get` manage merchant payment-financing applications under an account. Use each command's `--help` for account and application arguments. Creating an application reuses an open application and does not submit it for review.
+
 ## Usage
 
 ```bash
