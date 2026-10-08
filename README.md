@@ -10,7 +10,7 @@ whop checkout-configurations create --plan_id plan_xxx    # a link that accepts 
 whop media generate --type image --prompt "launch art"    # make an ad creative
 whop ads create …                                         # put it on Meta/Tiktok
 whop payouts create …                                     # send earnings to your bank
-whop stats list                                           # how it's all going
+whop stats time-series list                               # how it's all going
 ```
 
 With the CLI you can:
@@ -50,7 +50,7 @@ That's it! Run `whop auth accounts` anytime to switch businesses.
 
 ## Financing applications
 
-`whop financing-applications list`, `create`, and `get` manage merchant payment-financing applications under an account. Use each command's `--help` for account and application arguments. Creating an application reuses an open application and does not submit it for review.
+`whop accounts financing-applications list`, `get`, `create`, `update`, and `submit` manage merchant payment-financing applications under an account. Use each command's `--help` for account and application arguments. Creating an application reuses an open application and does not submit it for review.
 
 ## Usage
 
@@ -58,7 +58,7 @@ That's it! Run `whop auth accounts` anytime to switch businesses.
 whop --help                  # all commands
 whop products list           # what you're selling
 whop plans create --help     # options for any command
-whop stats list              # your numbers
+whop stats time-series list  # your numbers
 whop accounts get jordan                # retrieve a business by route
 whop partners retrieve me                # your partner profile and payout rates
 ```
@@ -124,7 +124,7 @@ App logs cover the hosted server runtime. Use your browser's developer console f
 whop products create --title "Pro membership"
 whop plans create --help                            # one-time, recurring, trials, stock
 whop checkout-configurations create --help          # shareable, prefilled checkout link
-whop stats list                                     # financial, audience, and traffic reporting
+whop stats time-series list                         # financial, audience, and traffic reporting
 ```
 
 Set product gallery images or videos with uploaded file IDs:
