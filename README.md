@@ -137,20 +137,21 @@ whop products update prod_xxxxxxxx --gallery_images '[{"id":"file_xxxxxxxx"}]'
 
 Money moves through the same surface: payouts, transfers, deposits, swaps, and cards. Payouts and card issuing require identity verification (`whop verifications`). Steps that need a browser, like KYC, show up as a link to open.
 
+Use `whop transfers get-claim-link <id>` to retrieve a funded claim link by its `airdrp_` ID or public claim code. ID reads require `airdrop_link:basic:read` on the funding business or ownership of the funding personal account; a claim code allows a public preview.
+
 ## Read trading activity
 
-Trading is available by request. Email support@whop.com to get access.
+Trading account access is available by request. Email support@whop.com to get access.
 
 ```bash
 whop accounts get biz_xxx --include_trading true --format json
 whop users get me --include_trading true --format json
+whop trades list --format json
 ```
 
-These commands retrieve trading balances, positions and open orders from the supported provider; they don't place orders or move funds. Hyperliquid is currently supported.
+These commands return the trading account address, its Hyperliquid websocket subscriptions, and earlier trade submissions. They don't place orders or move funds. Read live positions and open orders from Hyperliquid over the websocket.
 
-Use `whop trades create --help` for market, limit, ladder and take-profit/stop-loss orders; `whop trades cancel trop_xxx` to cancel an original batch; and `whop trades leverage --help` to configure leverage. Retrieve an initiated action with `whop trades get trop_xxx`. These are submission records, not live fill history. Writes require an `Idempotency-Key`; reuse it after an ambiguous response.
-
-Opening positions and changing leverage are available by request. Cancellation and reduce-only exits keep working even when Whop pauses new positions.
+Trade writes are retired. `whop trades create`, `whop trades cancel` and `whop trades leverage` return `410 Gone` and send nothing to Hyperliquid. `whop trades get trop_xxx` returns an earlier submission record, not live fills.
 
 ## Serve the customers you have
 
@@ -179,7 +180,7 @@ whop media generate --type image --prompt "A running club at sunrise" --wait
 whop ads create \
   --title "Launch ad" --headlines "Find your stride" --call_to_action sign_up \
   --url "https://whop.com/your-store" \
-  --creatives '[{"id":"file_x"}]' --social_accounts '[{"id":"sacc_x"}]' \
+  --creatives '[{"id":"file_x"}]' --external_accounts '[{"id":"sacc_x"}]' \
   --ad_group '{"title":"US broad","conversion_location":"website","ad_campaign":{"title":"Growth","platform":"meta","objective":"sales","status":"draft","budget_amount":25,"budget_optimization":"ad_campaign"}}'
 whop ad-campaigns update <adcamp_id> --status active   # launch when ready
 ```
