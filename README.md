@@ -4,7 +4,7 @@
 
 ```bash
 whop accounts create --title "Acme"                       # create a business
-whop apps deploy                                          # ship a web app to *.whop.site
+whop apps deploy                                          # ship a web app to its domain
 whop products create --title "Pro membership"             # something to sell
 whop checkout-configurations create --plan_id plan_xxx    # a link that accepts money
 whop media generate --type image --prompt "launch art"    # make an ad creative
@@ -15,7 +15,7 @@ whop stats time-series list                               # how it's all going
 
 With the CLI you can:
 
-- **Ship software**: build and deploy hosted web apps to `*.whop.site`, with previews, rollbacks, secrets, and production logs
+- **Ship software**: build and deploy hosted web apps to `*.whop.site` or your own domain, with previews, rollbacks, secrets, and production logs
 - **Sell anything**: products, one-time / recurring / trial pricing, checkout links
 - **Move money**: payouts, transfers, deposits, currency swaps, spending cards
 - **Advertise**: generate AI images and video, run Meta or Tiktok campaigns
@@ -82,11 +82,12 @@ Use `--account_id biz_...` to identify the account for an affected resource. Bot
 
 ## Ship apps
 
-Hosted web apps (`*.whop.site`) follow a git-shaped lifecycle. Two on-ramps, one loop:
+Hosted web apps (on `*.whop.site` or a custom domain) follow a git-shaped lifecycle. Three on-ramps, one loop:
 
 ```bash
 whop apps init                    # start a NEW app: registers, scaffolds, git-inits
 whop apps pull --app app_xxx      # or pull an EXISTING app's deployed source
+whop apps init --app app_xxx      # or start code for an existing app that was never deployed
 
 # The loop
 whop apps dev                     # local dev server, credentials auto-injected
