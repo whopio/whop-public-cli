@@ -6,9 +6,9 @@
 whop accounts create --title "Acme"                       # create a business
 whop apps deploy                                          # ship a web app to its domain
 whop products create --title "Pro membership"             # something to sell
-whop checkout-configurations create --plan_id plan_xxx    # a link that accepts money
+whop checkout-configurations create --variant_id plan_xxx # a link that accepts money
 whop media generate --type image --prompt "launch art"    # make an ad creative
-whop ads create …                                         # put it on Meta/Tiktok
+whop ads create …                                         # run it as an ad
 whop payouts create …                                     # send earnings to your bank
 whop stats time-series list                               # how it's all going
 ```
@@ -18,7 +18,7 @@ With the CLI you can:
 - **Ship software**: build and deploy hosted web apps to `*.whop.site` or your own domain, with previews, rollbacks, secrets, and production logs
 - **Sell anything**: products, one-time / recurring / trial pricing, checkout links
 - **Move money**: payouts, transfers, deposits, currency swaps, spending cards
-- **Advertise**: generate AI images and video, run Meta or Tiktok campaigns
+- **Advertise**: generate AI images and video, run ad campaigns
 - **Hire**: post bounties with escrowed rewards, review submissions, pay the winners
 - **Measure**: financial, audience, and traffic stats, plus tracked people and events
 - **Automate all of it**: structured output, a machine-readable manifest, an MCP server, and agent skills built in
@@ -48,9 +48,11 @@ whop
 
 That's it! Run `whop auth accounts` anytime to switch businesses.
 
-## Financing applications
+## Financing
 
-`whop accounts financing-applications list`, `get`, `create`, `update`, and `submit` manage merchant payment-financing applications under an account. Use each command's `--help` for account and application arguments. Creating an application reuses an open application and does not submit it for review.
+`whop financing-applications list`, `get`, `create`, `update`, and `submit` manage merchant payment-financing applications. Pass `--account_id` to choose the account; an account API key defaults to its own. Creating an application reuses an open application and does not submit it for review.
+
+`whop accounts financing-providers <account_id>` shows each financing provider's status for an account: whether checkout offers it, what to do to turn it on, and why it is off. Pass `--status` to narrow the list.
 
 ## Usage
 
@@ -182,7 +184,7 @@ whop ads create \
   --title "Launch ad" --headlines "Find your stride" --call_to_action sign_up \
   --url "https://whop.com/your-store" \
   --creatives '[{"id":"file_x"}]' --external_accounts '[{"id":"sacc_x"}]' \
-  --ad_group '{"title":"US broad","conversion_location":"website","ad_campaign":{"title":"Growth","platform":"meta","objective":"sales","status":"draft","budget_amount":25,"budget_optimization":"ad_campaign"}}'
+  --ad_group '{"title":"US broad","conversion_location":"website","ad_campaign":{"title":"Growth","platform":"whop","objective":"sales","status":"draft","budget_amount":25,"budget_optimization":"ad_campaign"}}'
 whop ad-campaigns update <adcamp_id> --status active   # launch when ready
 ```
 
