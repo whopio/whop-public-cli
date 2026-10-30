@@ -9,6 +9,7 @@ whop products create --title "Pro membership"             # something to sell
 whop checkout-configurations create --variant_id plan_xxx # a link that accepts money
 whop media generate --type image --prompt "launch art"    # make an ad creative
 whop ads create …                                         # run it as an ad
+whop pay @alice 25                                        # pay anyone by @username or email
 whop payouts create …                                     # send earnings to your bank
 whop stats time-series list                               # how it's all going
 ```
@@ -17,7 +18,7 @@ With the CLI you can:
 
 - **Ship software**: build and deploy hosted web apps to `*.whop.site` or your own domain, with previews, rollbacks, secrets, and production logs
 - **Sell anything**: products, one-time / recurring / trial pricing, checkout links
-- **Move money**: payouts, transfers, deposits, currency swaps, spending cards
+- **Move money**: pay anyone by @username or email, payouts, transfers, deposits, currency swaps, spending cards
 - **Advertise**: generate AI images and video, run ad campaigns
 - **Hire**: post bounties with escrowed rewards, review submissions, pay the winners
 - **Measure**: financial, audience, and traffic stats, plus tracked people and events
@@ -140,6 +141,8 @@ whop products update prod_xxxxxxxx --gallery_images '[{"id":"file_xxxxxxxx"}]'
 
 Money moves through the same surface: payouts, transfers, deposits, swaps, and cards. Payouts and card issuing require identity verification (`whop verifications`). Steps that need a browser, like KYC, show up as a link to open.
 
+`whop pay @sam 10` pays a Whop user 10 USD from your business: it finds them, shows who you're paying, and asks before sending. Add `--from biz_xxx` to pay from another business, or `--dry-run` to see the recipient without sending. The CLI can't send from a personal balance.
+
 Use `whop transfers get-claim-link <id>` to retrieve a funded claim link by its `airdrp_` ID or public claim code. ID reads require `airdrop_link:basic:read` on the funding business or ownership of the funding personal account; a claim code allows a public preview.
 
 ## Read trading activity
@@ -183,8 +186,8 @@ whop media generate --type image --prompt "A running club at sunrise" --wait
 whop ads create \
   --title "Launch ad" --headlines "Find your stride" --call_to_action sign_up \
   --url "https://whop.com/your-store" \
-  --creatives '[{"id":"file_x"}]' --external_accounts '[{"id":"sacc_x"}]' \
-  --ad_group '{"title":"US broad","conversion_location":"website","ad_campaign":{"title":"Growth","platform":"whop","objective":"sales","status":"draft","budget_amount":25,"budget_optimization":"ad_campaign"}}'
+  --creatives '[{"id":"file_x"}]' \
+  --ad_group '{"title":"US broad","ad_campaign":{"title":"Growth","objective":"sales","status":"draft","budget_amount":25,"budget_optimization":"ad_campaign"}}'
 whop ad-campaigns update <adcamp_id> --status active   # launch when ready
 ```
 
