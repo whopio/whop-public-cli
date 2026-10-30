@@ -9,7 +9,7 @@ whop products create --title "Pro membership"             # something to sell
 whop checkout-configurations create --variant_id plan_xxx # a link that accepts money
 whop media generate --type image --prompt "launch art"    # make an ad creative
 whop ads create …                                         # run it as an ad
-whop pay @alice 25                                        # pay anyone by @username or email
+whop send @alice 25                                       # send money to anyone by @username or email
 whop payouts create …                                     # send earnings to your bank
 whop stats time-series list                               # how it's all going
 ```
@@ -18,7 +18,7 @@ With the CLI you can:
 
 - **Ship software**: build and deploy hosted web apps to `*.whop.site` or your own domain, with previews, rollbacks, secrets, and production logs
 - **Sell anything**: products, one-time / recurring / trial pricing, checkout links
-- **Move money**: pay anyone by @username or email, payouts, transfers, deposits, currency swaps, spending cards
+- **Move money**: send to anyone by @username or email, payouts, transfers, deposits, currency swaps, spending cards
 - **Advertise**: generate AI images and video, run ad campaigns
 - **Hire**: post bounties with escrowed rewards, review submissions, pay the winners
 - **Measure**: financial, audience, and traffic stats, plus tracked people and events
@@ -141,7 +141,7 @@ whop products update prod_xxxxxxxx --gallery_images '[{"id":"file_xxxxxxxx"}]'
 
 Money moves through the same surface: payouts, transfers, deposits, swaps, and cards. Payouts and card issuing require identity verification (`whop verifications`). Steps that need a browser, like KYC, show up as a link to open.
 
-`whop pay @sam 10` pays a Whop user 10 USD from your business: it finds them, shows who you're paying, and asks before sending. Add `--from biz_xxx` to pay from another business, or `--dry-run` to see the recipient without sending. The CLI can't send from a personal balance.
+`whop send @sam 10` sends 10 USD to a Whop user from your business: it finds them, shows who will receive it, and asks before sending. Add `--from biz_xxx` to send from another business, or `--dry-run` to see the recipient without sending. The CLI can't send from a personal balance.
 
 Use `whop transfers get-claim-link <id>` to retrieve a funded claim link by its `airdrp_` ID or public claim code. ID reads require `airdrop_link:basic:read` on the funding business or ownership of the funding personal account; a claim code allows a public preview.
 
