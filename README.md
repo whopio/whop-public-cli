@@ -32,6 +32,9 @@ With the CLI you can:
 # macOS / Linux
 curl -fsSL https://whop.com/install.sh | sh
 
+# Windows (PowerShell)
+irm https://github.com/whopio/whop-public-cli/releases/latest/download/install.ps1 | iex
+
 # Homebrew
 brew install whopio/tap/whop
 
@@ -39,7 +42,11 @@ brew install whopio/tap/whop
 npm install -g @whop/cli
 ```
 
-Prebuilt binaries cover macOS and Linux ([releases](https://github.com/whopio/whop-public-cli/releases)); on other platforms, use npm. The standalone installer uses your standard user executable directory (`$XDG_BIN_HOME` or `~/.local/bin`).
+Prebuilt binaries cover macOS, Linux (glibc and musl) and Windows, on arm64 and x64. On Alpine and other musl distributions, install `libstdc++` and `libgcc` first (`apk add libstdc++ libgcc`) ([releases](https://github.com/whopio/whop-public-cli/releases)). The installers put `whop` in `~/.local/bin` (`%USERPROFILE%\.local\bin` on Windows; set `WHOP_INSTALL_DIR` to choose another directory) and do not edit your shell profile. If `whop` is not found after installing, add that directory to your `PATH`:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
 
 ## Getting started
 
@@ -47,20 +54,20 @@ Prebuilt binaries cover macOS and Linux ([releases](https://github.com/whopio/wh
 whop
 ```
 
-That's it! Run `whop auth accounts` anytime to switch businesses.
+That's it! Run `whop auth account` anytime to switch businesses.
 
 ## Financing
 
 `whop financing-applications list`, `get`, `create`, `update`, and `submit` manage merchant payment-financing applications. Pass `--account_id` to choose the account; an account API key defaults to its own. Creating an application reuses an open application and does not submit it for review.
 
-`whop accounts financing-providers <account_id>` shows each financing provider's status for an account: whether checkout offers it, what to do to turn it on, and why it is off. Pass `--status` to narrow the list.
+`whop accounts financing-providers --account_id biz_xxx` shows each financing provider's status for an account: whether checkout offers it, what to do to turn it on, and why it is off. Pass `--status` to narrow the list.
 
 ## Usage
 
 ```bash
 whop --help                  # all commands
 whop products list           # what you're selling
-whop plans create --help     # options for any command
+whop variants create --help  # options for any command
 whop stats time-series list  # your numbers
 whop accounts get jordan                # retrieve a business by route
 whop partners retrieve me                # your partner profile and payout rates
@@ -91,15 +98,18 @@ Hosted web apps (on `*.whop.site` or a custom domain) follow a git-shaped lifecy
 whop apps init                    # start a NEW app: registers, scaffolds, git-inits
 whop apps pull --app app_xxx      # or pull an EXISTING app's deployed source
 whop apps init --app app_xxx      # or start code for an existing app that was never deployed
+whop apps init --template storefront   # or start a complete shop with a cart and checkout
 
 # The loop
 whop apps dev                     # local dev server, credentials auto-injected
 whop apps deploy                  # build, typecheck, upload, promote to production
 ```
 
-`deploy --preview` uploads without promoting. `whop apps builds promote <build_id>` ships a build later, and promoting an older build rolls back. `pull` merges the deployed source with your local files via git, so conflicts show up as normal git conflict markers.
+`init` registers the app on the selected business; pass `--account_id biz_xxx` to use another one. `deploy --preview` uploads without promoting. `whop apps builds promote <build_id>` ships a build later, and promoting an older build rolls back. `pull` merges the deployed source with your local files via git, so conflicts show up as normal git conflict markers.
 
 The rest is plain REST: `whop apps list|create|get|update|delete`, `whop apps builds list|get|promote`, `whop apps secrets list|set|unset`. The `whop()` Vite build plugin ships as `@whop/cli/vite`.
+
+Use `whop apps categories` to list the App Store categories, or `--app_type b2b_app` / `b2c_app` for one store's. Set `category_id` to a business category when updating a business app; the category's `route` filters app lists through `--marketplace_category_route`.
 
 App secrets are encrypted at rest and injected into the hosted runtime. `whop apps dev` also injects them locally, except names that control the local runtime.
 
@@ -126,7 +136,7 @@ App logs cover the hosted server runtime. Use your browser's developer console f
 
 ```bash
 whop products create --title "Pro membership"
-whop plans create --help                            # one-time, recurring, trials, stock
+whop variants create --help                         # one-time, recurring, trials, stock
 whop checkout-configurations create --help          # shareable, prefilled checkout link
 whop stats time-series list                         # financial, audience, and traffic reporting
 ```
@@ -157,7 +167,7 @@ whop trades list --format json
 
 These commands return the trading account address, its Hyperliquid websocket subscriptions, and earlier trade submissions. They don't place orders or move funds. Read live positions and open orders from Hyperliquid over the websocket.
 
-Trade writes are retired. `whop trades create`, `whop trades cancel` and `whop trades leverage` return `410 Gone` and send nothing to Hyperliquid. `whop trades get trop_xxx` returns an earlier submission record, not live fills.
+Trade writes are retired. `whop trades create` and `whop trades cancel` return `410 Gone` and send nothing to Hyperliquid. `whop trades get trop_xxx` returns an earlier submission record, not live fills.
 
 ## Serve the customers you have
 
@@ -195,7 +205,7 @@ The `whop` skill (`whop skills add`) carries the launch playbook in `references/
 
 ## Run experiments
 
-Use `whop experiments` to list, create, get, update, evaluate exposures, activate, pause, or end account experiments. Account experiments do not accept or require tags. Creating one currently requires Whop internal access.
+Use `whop experiments` to list, create, get, update, evaluate exposures, activate, pause, or end account experiments. Account experiments don't accept tags. Experiment creation isn't available to all accounts yet.
 
 ```bash
 whop experiments list --account_id biz_xxx
@@ -246,7 +256,9 @@ whop login --method api-key --api-key whop_xxx      # explicit API-key login
 WHOP_API_KEY=whop_xxx whop login --method api-key   # API key from the environment
 ```
 
-List your businesses with `whop auth account --list` and switch with `whop auth account <biz_id>`.
+List your businesses with `whop auth account --list` and switch with `whop auth account <biz_id>`. If you manage more than one business, `whop login` asks which one to use; agents and scripts set it afterwards with `whop auth account <biz_id>`.
+
+Saved credentials live in `~/.config/whop/credentials.json`, encrypted with a key bound to this machine. Credentials an earlier version stored in the OS keychain are no longer read, so run `whop login` once after upgrading. Neither `whop login` nor `whop logout` deletes those keychain entries, so remove them yourself for each profile (`whop auth list` names them; if it is empty, `security dump-keychain | grep whop-cli`, `secret-tool search --all service whop-cli` or `cmdkey /list | findstr whop-cli` finds them): `security delete-generic-password -s whop-cli -a <profile>` on macOS, `secret-tool clear service whop-cli username <profile>` on Linux, or `cmdkey /delete:<profile>.whop-cli` on Windows. Revoke the API key in the dashboard if you no longer use it. Login, logout, and the `auth` commands are not exposed to MCP clients.
 
 `whop api-keys permissions` lists the permissions that can be assigned to API keys. Creating, listing, updating, rotating, and revoking keys requires a first-party dashboard session, so those operations are not exposed by the CLI. Manage keys in the [Whop dashboard](https://whop.com/dashboard).
 
@@ -254,7 +266,7 @@ The OAuth flow redirects to `localhost:13337`, so the browser must run on the sa
 
 ## Invocation logs
 
-Every run appends one JSON line (arguments with secrets redacted, exit code, duration) to `~/.config/whop/logs/audit-YYYY-MM-DD.jsonl`. Logs older than 7 days are deleted.
+Every command run appends one JSON line (arguments with secrets redacted, the command, exit code, duration) to `~/.config/whop/logs/audit-YYYY-MM-DD.jsonl`. Logs older than 7 days are deleted.
 
 ```bash
 WHOP_CLI_AUDIT_RETENTION_DAYS=30 whop …   # keep logs longer
@@ -265,7 +277,9 @@ WHOP_CLI_AUDIT_LOG=0 whop …               # disable logging
 
 ## Updating
 
-The CLI keeps itself up to date. To update manually, run `whop upgrade`.
+Standalone installs on macOS and Linux check GitHub hourly and replace themselves with the verified release in the background; set `WHOP_CLI_AUTO_UPDATE=0` to get only a notice. Elsewhere, an interactive terminal tells you when a newer release is out. `whop --update` (or `whop upgrade`) installs it now, and exits 0 when you are already up to date: standalone installs replace themselves with the verified GitHub release, and npm installs run your package manager's global install. Homebrew installs update with `brew upgrade whop`. Set `NO_UPDATE_NOTIFIER=1` to turn off update checks.
+
+`whop --version` prints the installed version; `whop --help` also shows the API version the CLI speaks. A standalone 0.x install updates itself to 1.x.
 
 ## Documentation
 
